@@ -72,7 +72,7 @@ If you have files that exist in directories outside your current one, you'll nee
 #### Customized installation:
 Git clone our BEASTIE scripts and example data in your working directory ($workdir)
 ```bash
-% git clone --recurse-submodules https://github.com/x811zou/BEASTIE.git
+% git clone https://github.com/x811zou/BEASTIE.git
 ```
 Installing [CmdStan](https://mc-stan.org/users/interfaces/cmdstan), and set the environment variable $STAN to the directory where CmdStan has been installed.
 
