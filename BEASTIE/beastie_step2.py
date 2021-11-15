@@ -5,16 +5,17 @@
 import sys
 import os
 import logging
+import subprocess
 import pandas as pd
-from prepare_model import (
+from .prepare_model import (
     update_model_input_lambda_phasing,
     significant_genes,
     generate_modelCount,
 )
-from beastie_step1 import create_output_directory
-import run_model_stan_wrapper
-import binomial_for_real_data 
-import ADM_for_real_data
+from .beastie_step1 import create_output_directory
+from . import run_model_stan_wrapper
+from . import binomial_for_real_data 
+from . import ADM_for_real_data
 import re
 
 def create_file_name(hetSNP_intersect_unique,meta,out,common):
@@ -45,10 +46,10 @@ def run(hetSNP_intersect_unique,meta,hetSNP_intersect_unique_forlambda_file,hetS
     else:
         logging.info('..... data exists, overwrites and saves at {0}'.format(hetSNP_intersect_unique_lambdaPredicted_file))
         logging.info('..... data exists, overwrites and saves at {0}'.format(meta_error))
-    cmd="Rscript --vanilla predict_lambda_phasingError.R %s %s %s %s %s %s %s %s %s"%(
+    cmd="Rscript --vanilla ./BEASTIE/predict_lambda_phasingError.R %s %s %s %s %s %s %s %s %s"%(
             alpha,common,prefix,model,hetSNP_intersect_unique,hetSNP_intersect_unique_forlambda_file,hetSNP_intersect_unique_lambdaPredicted_file,meta,meta_error
         )
-    os.system(cmd)
+    subprocess.call(cmd, shell=True)
     data22=pd.read_csv(hetSNP_intersect_unique_lambdaPredicted_file,sep="\t",header=0,index_col=False)
     logging.info('..... For type 1 error model, input alpha (family wise error rate) is {0}, adjusted after size of input {1} : {2}'.format(alpha,data22.shape[0],alpha/data22.shape[0]))
     #########################

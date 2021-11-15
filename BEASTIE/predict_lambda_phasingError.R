@@ -52,8 +52,8 @@ meta_error=args[9]
 # meta="/Users/scarlett/Documents/Allen_lab/github/BEASTIE/BEASTIE_example/HG00096_chr21/output/TEMP/HG00096_chr21_meta.tsv"
 # meta_error="/Users/scarlett/Documents/Allen_lab/github/BEASTIE/BEASTIE_example/HG00096_chr21/output/HG00096_chr21_meta_w_error.tsv"
 
-source("Get_phasing_error_rate.R")
-source("Get_LD.R")
+source("./BEASTIE/Get_phasing_error_rate.R")
+source("./BEASTIE/Get_LD.R")
 
 predict_lambda_realdata <- function(alpha,in_data,out_data){
   #colnames(in_data)<-c("gene_ID","total_reads","num_hets")
@@ -68,9 +68,9 @@ predict_lambda_realdata <- function(alpha,in_data,out_data){
 
 ############################################## 1. predict lambda #####################################################
 if(grepl("iBEASTIE", model, fixed=TRUE)){
-  lambda.fit.simulation<- readRDS("LinearReg_iBEASTIE_fitted_model_lambda.rds")
+  lambda.fit.simulation<- readRDS("./BEASTIE/LinearReg_iBEASTIE_fitted_model_lambda.rds")
 }else{
-  lambda.fit.simulation<- readRDS("LinearReg_BEASTIE_fitted_model_lambda.rds")
+  lambda.fit.simulation<- readRDS("./BEASTIE/LinearReg_BEASTIE_fitted_model_lambda.rds")
 }
 
 in_data<-read.delim(file.path(hetSNP_intersect_unique_forlambda_file),header=TRUE,sep="\t") 
@@ -86,7 +86,7 @@ if (!file.exists(out_data)) {
 ################################################ 2.1 predict phasing error ###################################
 if (!file.exists(meta_error)) {
   sample_info<-read.delim(file.path(meta),header=TRUE,sep="\t")
-  cv.glmnet.fit.GIAB<- readRDS("LogisticReg_GIAB_fitted_phasing_error.rds")
+  cv.glmnet.fit.GIAB<- readRDS("./BEASTIE/LogisticReg_GIAB_fitted_phasing_error.rds")
   x.test<-as.matrix(sample_info%>%dplyr::select(min_MAF,diff_MAF,log10_distance,r2,d)%>%
                       dplyr::mutate(min_MAF_diff_MAF=min_MAF*diff_MAF)%>%
                       mutate(min_MAF_log10_distance=log10_distance*min_MAF)%>%

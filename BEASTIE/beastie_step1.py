@@ -8,10 +8,10 @@ import sys
 import pandas as pd
 from misc_tools.GffTranscriptReader import GffTranscriptReader
 from misc_tools.Pipe import Pipe
-from extractHets import count_all_het_sites
-from parse_mpileup import Parse_mpileup_allChr
-from intersect_hets import Intersect_exonicHetSnps
-import annotation
+from .extractHets import count_all_het_sites
+from .parse_mpileup import Parse_mpileup_allChr
+from .intersect_hets import Intersect_exonicHetSnps
+from . import annotation
 import shutil
 
 def check_file_existence(prefix,in_path,out,model,vcf,ref_dir,pileup,hetSNP,parsed_pileup,sigma,alpha,WARMUP,KEEPER,min_single_cov,min_total_cov,chr_start,chr_end):
@@ -28,9 +28,9 @@ def check_file_existence(prefix,in_path,out,model,vcf,ref_dir,pileup,hetSNP,pars
     else:
         logging.error('Oops! STAN path {0} doesn\'t exist. Please try again ...'.format(STAN))
         sys.exit(1)
-    if stan_model is False:
-        logging.error('Oops! STAN model {0} doesn\'t exist in {1}. Please try again ...'.format(modelName,STAN))
-        sys.exit(1)
+    # if stan_model is False:
+    #     logging.error('Oops! STAN model {0} doesn\'t exist in {1}. Please try again ...'.format(modelName,STAN))
+    #     sys.exit(1)
     ##### vcf & vcfgz
     vcfgz = '{0}.gz'.format(vcf)
     vcfgztbi = '{0}.tbi'.format(vcfgz)
@@ -204,7 +204,7 @@ def run(sigma,alpha,WARMUP,KEEPER,prefix,vcf_sample_name,in_path,out,model,vcf,r
         logging.info('=================')
         logging.info('================= Starting specific step 1.5')
         logging.info('..... start annotating LD information')
-        annotation.annotateLD(prefix,ancestry,hetSNP_intersect_unique,out,LD_token,chr_start,chr_end,meta)
+        annotation.annotateLD(prefix,ancestry,hetSNP_intersect_unique,out,LD_token,chr_start,chr_end,meta, './BEASTIE')
     else:
         logging.info('=================')
         logging.info('================= Skipping specific step 1.5')

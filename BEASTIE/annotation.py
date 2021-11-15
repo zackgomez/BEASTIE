@@ -3,6 +3,7 @@
 # 2021 Xue Zou (xue.zou@duke.edu)
 #=========================================================================
 import os
+import subprocess
 import pandas as pd
 import logging
 
@@ -10,7 +11,7 @@ def annotateAF(ancestry,hetSNP,out_AF,ref_dir):
     AF_file = os.path.join(ref_dir,"AF_1_22.tsv")
     if not os.path.isfile(out_AF):
         logging.info('..... start reading 1000 Genome AF annotation file')
-        AF=pd.read_csv(AF_file, header=0,sep='\t') 
+        AF=pd.read_csv(AF_file, header=0,sep='\t', engine='c', na_filter=False) 
         logging.info('..... finish reading 1000 Genome AF annotation file')
         data=pd.read_csv(hetSNP,sep="\t",header=0,index_col=False)
         if ancestry == "EUR":
@@ -35,10 +36,12 @@ def annotateAF(ancestry,hetSNP,out_AF,ref_dir):
     else:
         logging.info('..... skip annotating AF for SNPs, file already saved at {0}'.format(out_AF)) 
 
-def annotateLD(prefix,ancestry,hetSNP_intersect_unique,out,LD_token,chr_start,chr_end,meta):
+def annotateLD(prefix,ancestry,hetSNP_intersect_unique,out,LD_token,chr_start,chr_end,meta,r_path):
     if not os.path.isfile(meta):
-        cmd="Rscript --vanilla annotate_LD_new.R %s %s %s %s %s %d %d %s"%(prefix,ancestry,hetSNP_intersect_unique,out,LD_token,int(chr_start),int(chr_end),meta)
-        os.system(cmd)
+        cmdname = os.path.join(r_path, 'annotate_LD_new.r');
+        cmd="Rscript --vanilla %s %s %s %s %s %s %d %d %s"%(cmdname, prefix,ancestry,hetSNP_intersect_unique,out,LD_token,int(chr_start),int(chr_end),meta)
+        output_file = stdout=open(os.path.join(prefix, out, 'rlog.stdout'), 'w')
+        subprocess.call(cmd, shell=True, stdout=output_file, stderr=output_file)
         logging.info('..... finish annotating LD for SNP pairs, file save at {0}'.format(meta))
     else:
         logging.info('..... skip annotating LD for SNP pairs, file already saved at {0}'.format(meta))

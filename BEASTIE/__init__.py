@@ -40,11 +40,11 @@ def load_configuration(config_file):
         vcf_sample_name=inputs['vcf_sample_name'],
         pileup_file_name=inputs['pileup_file_name'],
         ancestry=inputs['ancestry'],
-        min_total_cov=inputs['min_total_cov'],
-        min_single_cov=inputs['min_single_cov'],
-        sigma=inputs['sigma'],
-        cutoff=inputs['cutoff'],
-        alpha=inputs['alpha'],
+        min_total_cov=inputs.get('min_total_cov', 1),
+        min_single_cov=inputs.get('min_single_cov', 0),
+        sigma=inputs.get('sigma', 0.5),
+        cutoff=inputs.get('cutoff', 0.5),
+        alpha=inputs.get('alpha', 0.05),
         chr_start=inputs['chr_start'],
         chr_end=inputs['chr_end'],
         read_length=inputs['read_length'],
@@ -54,9 +54,9 @@ def load_configuration(config_file):
         work_dir=inputs['work_dir'],
         ref_dir=inputs['ref_dir'],
         input_dir=inputs['input_dir'],
-        SAVE_INT=inputs['SAVE_INT'],
-        WARMUP=inputs['WARMUP'],
-        KEEPER=inputs['KEEPER'],
+        SAVE_INT=inputs.get('SAVE_INT', False),
+        WARMUP=inputs.get('WARMUP', 1000),
+        KEEPER=inputs.get('KEEPER', 1000),
         output_dir=outputs['out_path'],
     )
 
@@ -72,10 +72,10 @@ def run(config):
     in_path = os.path.join(config.input_dir, config.prefix)
     vcf_file = os.path.join(in_path, config.vcf_file_name)
     pileup_file = os.path.join(in_path, config.pileup_file_name)
-    model = os.path.join(f"{config.STAN}{config.modelName}", config.modelName)
+    model = os.path.join(config.STAN, config.modelName)
     stdout_file = os.path.join(in_path, "output", f"{config.prefix}-{date.today().strftime('%b-%d-%Y')}.stdout")
 
-    cmd = f"python BEASTIE.py build --prefix {config.prefix} --vcf_sample_name {config.vcf_sample_name} --ref_dir {config.ref_dir} --vcf {vcf_file} --pileup {pileup_file} --in_path {in_path} --ancestry {config.ancestry} --chr_start {config.chr_start} --chr_end {config.chr_end} --read_length {config.read_length} --LD_token {config.LD_token} --model {model} --cutoff {config.cutoff} --alpha {config.alpha} --WARMUP {config.WARMUP} --KEEPER {config.KEEPER}"
+    cmd = f"python -m BEASTIE build --prefix {config.prefix} --vcf_sample_name {config.vcf_sample_name} --ref_dir {config.ref_dir} --vcf {vcf_file} --pileup {pileup_file} --in_path {in_path} --ancestry {config.ancestry} --chr_start {config.chr_start} --chr_end {config.chr_end} --read_length {config.read_length} --LD_token {config.LD_token} --model {model} --cutoff {config.cutoff} --alpha {config.alpha} --WARMUP {config.WARMUP} --KEEPER {config.KEEPER}"
     subprocess.call(cmd, shell=True, stdout=open(stdout_file, 'w'), stderr=open(stdout_file, 'w'))
 
 if __name__ == "__main__":

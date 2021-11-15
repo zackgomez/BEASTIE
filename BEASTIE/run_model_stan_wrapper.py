@@ -27,6 +27,7 @@ import math
 import os.path
 import misc_tools.TempFilename
 import logging
+import subprocess
 
 def writeInitializationFile(filename):
     OUT=open(filename,"wt")
@@ -127,7 +128,7 @@ def runModel(model,fields,tmp_output_file,stan_output_file,init_file,sigma,WARMU
             "%s sample num_samples=%s num_warmup=%s data file=%s init=%s output file=%s refresh=0"
             % (model,KEEPER,WARMUP,tmp_output_file,init_file,stan_output_file)
         )
-        os.system(cmd)# Parse MCMC output
+        subprocess.run(cmd, check=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)# Parse MCMC output
         parser=StanParser(stan_output_file)
         thetas=parser.getVariable("theta")
         return thetas

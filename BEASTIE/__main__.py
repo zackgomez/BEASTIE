@@ -11,13 +11,13 @@ import argparse
 import pandas as pd
 from misc_tools.GffTranscriptReader import GffTranscriptReader
 from misc_tools.Pipe import Pipe
-import beastie_step1
-import beastie_step2
+from . import beastie_step1
+from . import beastie_step2
 from datetime import date
 today = date.today()
 
 def _build(args):
-    logname=args.in_path+"output/"+args.prefix+"-"+str(today.strftime("%b-%d-%Y"))+".log"
+    logname = os.path.join(args.in_path, "output/", args.prefix+"-"+str(today.strftime("%b-%d-%Y"))+".log")
     if os.path.isfile(logname):
         os.remove(logname)
     logging.basicConfig(filename=logname,
@@ -71,5 +71,4 @@ def main():
     args = parser.parse_args()
     args.command(args)
 
-if __name__ == '__main__':
-    main()
+main()
