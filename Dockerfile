@@ -1,4 +1,4 @@
- FROM gcc:11 AS CMDSTAN
+FROM gcc:10 AS CMDSTAN
 
 WORKDIR /
 RUN apt-get update; apt-get install --no-install-recommends -qq wget ca-certificates
@@ -30,8 +30,6 @@ RUN apt-get update \
 COPY --from=CMDSTAN /cmdstan/iBEASTIE2 /usr/local/bin
 
 RUN ln -s /usr/bin/python3.8 /usr/bin/python
-COPY . .
-RUN make install
 
 RUN R -e "install.packages('LDlinkR', dependencies=TRUE, repos = 'http://cran.us.r-project.org'); if (!library(LDlinkR, logical.return=T)) quit(status=10)" && \
   R -e "install.packages('reshape2', dependencies=TRUE, repos = 'http://cran.us.r-project.org');    if (!library(reshape2, logical.return=T)) quit(status=10)" && \
@@ -41,6 +39,9 @@ RUN R -e "install.packages('LDlinkR', dependencies=TRUE, repos = 'http://cran.us
   R -e "install.packages('readr', dependencies=TRUE, repos = 'http://cran.us.r-project.org');       if (!library(readr, logical.return=T)) quit(status=10)" && \
   R -e "install.packages('glmnetUtils', dependencies=TRUE, repos = 'http://cran.us.r-project.org'); if (!library(glmnetUtils, logical.return=T)) quit(status=10)" && \
   R -e "if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager', dependencies=TRUE, repos = 'http://cran.us.r-project.org'); BiocManager::install('pasilla');     if (!library(pasilla, logical.return=T)) quit(status=10)"
+
+COPY . .
+RUN make install
 
 RUN apt-get purge -y libicu-dev make gcc g++ libxml2-dev git autoconf zlib1g-dev libbz2-dev libssl-dev libcurl4-openssl-dev
 # RUN apk del -r icu-dev make gcc g++ musl-dev curl-dev libxml2-dev git autoconf zlib-dev bzip2 bzip2-dev
