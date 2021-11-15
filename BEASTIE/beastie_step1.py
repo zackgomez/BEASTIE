@@ -4,6 +4,7 @@
 #=========================================================================
 import os
 import logging
+import subprocess
 import sys
 import pandas as pd
 from misc_tools.GffTranscriptReader import GffTranscriptReader
@@ -40,15 +41,15 @@ def check_file_existence(prefix,in_path,out,model,vcf,ref_dir,pileup,hetSNP,pars
     elif (os.path.isfile(vcf) and (not os.path.isfile(vcfgz)) and (not os.path.isfile(vcfgztbi))):
         logging.warning('We will generate vcfgz for you ...'.format(vcfgz))
         cmd="bgzip -c %s > %s"%(vcf,vcfgz)
-        os.system(cmd)
+        subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         cmd="tabix -p vcf %s"%(vcfgz)
-        os.system(cmd)
+        subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     elif (os.path.isfile(vcfgz)) and (not os.path.isfile(vcf)):
         logging.warning('Oops! VCF file {0} not found. We will generate that for you ...'.format(vcf))
         cmd="gunzip %s > %s"%(vcfgz,vcf)
-        os.system(cmd)
+        subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         cmd="tabix -p vcf %s"%(vcfgz)
-        os.system(cmd)
+        subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     ##### reference directory : AF file and gencode directory
     AF_file = False
     if os.path.exists(ref_dir):
