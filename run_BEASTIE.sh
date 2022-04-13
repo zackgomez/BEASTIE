@@ -25,7 +25,6 @@ PYTHONPATH='.' python3 bin/beastie \
     --vcfgz-file $input_vcfgz \
     --vcf-sample-name $sample_name_in_vcf \
     --pileup-file $input_pileup \
-    --shapeit2-phasing-file $input_shapeit2 \
     --simulation-pileup-file $input_simulation_pileup \
     --ancestry $ancestry \
     --read-length $read_length \
@@ -40,6 +39,7 @@ PYTHONPATH='.' python3 bin/beastie \
     
     # --ld-token $LD_token \
 
+    # --shapeit2-phasing-file $input_shapeit2 \
     # --het-snp-file $input_hetsnp \
 
     # \
