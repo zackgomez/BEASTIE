@@ -21,6 +21,7 @@ output_dir=$base_dir/$sample/beastie
 
 ### in local
 PYTHONPATH='.' python3 bin/beastie \
+    runModel \
     --prefix test \
     --vcfgz-file $input_vcfgz \
     --vcf-sample-name $sample_name_in_vcf \
